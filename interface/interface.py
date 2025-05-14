@@ -36,8 +36,8 @@ class CogBackgroundWidget(QWidget):
         grad.setColorAt(1, QColor("#5c7bd1"))
         painter.fillRect(self.rect(), QBrush(grad))
         painter.setRenderHint(QPainter.Antialiasing)
-        brush = QBrush(QColor(255, 255, 255, 20))
-        for fx, fy, szf in [(0.3,0.4,0.25),(0.7,0.6,0.35),(0.5,0.2,0.2)]:
+        brush = QBrush(QColor(255, 255, 255, 7))
+        for fx, fy, szf in [(0.3,0.4,0.25),(0.7,0.6,0.35),(0.5,0.2,0.2),(-0.1,0.3,0.25),(-1,-0.5,-0.1),(0.6,0.5,0.4),(-0.6,0.9,0.4)]:
             outer = min(self.width(), self.height()) * szf
             center = QPointF(self.width()*fx, self.height()*fy)
             path = rounded_cog_path(center, outer)
@@ -47,10 +47,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # Ustawienia ikony i stylu okna
-        self.setWindowIcon(QIcon("logo.jpg"))  # ścieżka do Twojego logo
+        self.setWindowIcon(QIcon("logo.jpg"))  # ścieżka do logo
         self.setStyleSheet("QMainWindow { background-color: #1e1e3f; }")
         self.setWindowTitle("Presentation Helper")
-        self.setMinimumSize(1024, 600)
+        self.setMinimumSize(800, 600)
 
         central = QWidget()
         self.setCentralWidget(central)
@@ -58,9 +58,36 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(0,0,0,0)
 
         sidebar = QListWidget()
-        sidebar.addItems(["Poz1","Poz2","Poz3","Poz4"])
-        sidebar.setFixedWidth(220)
-        sidebar.setStyleSheet("background: rgba(46,46,92,0.5); color: #ccc; border: none;")
+        sidebar.addItems(["left mouse","right mouse","resize","scroll","action circle"])
+        # Wyśrodkowanie tekstu w każdej pozycji na liście
+        for i in range(sidebar.count()):
+            item = sidebar.item(i)
+            item.setTextAlignment(Qt.AlignCenter)
+
+        sidebar.setFixedWidth(150)
+        #sidebar.setStyleSheet("background: rgba(99, 99, 171,0.1); color:#b3b3e3; border: none;")
+        sidebar.setStyleSheet("""
+            QListWidget {
+                background: transparent;
+                border: none;
+                color: #b3b3e3;
+            }
+            QListWidget::item {
+                padding: 10px 16px;
+                margin: 4px;
+                background: rgba(40, 40, 69, 0.2);
+                border-radius: 6px;
+            }
+            QListWidget::item:hover {
+                background: rgba(90, 90, 150, 0.4);
+                color: white;
+            }
+            QListWidget::item:selected {
+                background: rgba(120, 120, 200, 0.5);
+                color: white;
+            }
+        """)
+
         main_layout.addWidget(sidebar)
 
         content = CogBackgroundWidget()
@@ -72,8 +99,6 @@ class MainWindow(QMainWindow):
         top_layout = QHBoxLayout(top_bar)
         top_layout.setContentsMargins(0,0,0,0)
         logo_lbl = QLabel()
-       # logo_pix = QPixmap("logo.jpg").scaled(32,32, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-       # logo_lbl.setPixmap(logo_pix)
         top_bar = QWidget(content)
         top_bar.setStyleSheet("background: rgba(30,30,63,0.8);")
         top_layout = QHBoxLayout(top_bar)
@@ -96,24 +121,6 @@ class MainWindow(QMainWindow):
         filler.setSizePolicy(filler.sizePolicy().Expanding, filler.sizePolicy().Expanding)
         content_layout.addWidget(filler)
 
-        info_tile = QWidget(filler)
-        info_tile.setStyleSheet("background: rgba(255,255,255,0.2); border-radius:8px;")
-        info_layout = QHBoxLayout(info_tile)
-        info_layout.setContentsMargins(8,8,8,8)
-        avatar = QLabel()
-        pix = QPixmap(64,64)
-        pix.fill(Qt.lightGray)
-        avatar.setPixmap(pix)
-        avatar.setFixedSize(64,64)
-        avatar.setStyleSheet("border-radius:32px;")
-        info_layout.addWidget(avatar)
-        name_lbl = QLabel("User Name\nDescription")
-        name_lbl.setStyleSheet("color:white")
-        info_layout.addWidget(name_lbl)
-        info_tile.adjustSize()
-        info_tile.move(filler.width()-info_tile.width()-20, 20)
-        info_tile.show()
-
         new_btn = QPushButton("New session", filler)
         new_btn.setIcon(QIcon.fromTheme("document-new"))
         new_btn.setStyleSheet(
@@ -126,7 +133,7 @@ class MainWindow(QMainWindow):
 
         def on_resize(e):
             fw, fh = filler.width(), filler.height()
-            info_tile.move(fw-info_tile.width()-20, 20)
+            #info_tile.move(fw-info_tile.width()-20, 20)
             new_btn.move(fw-new_btn.width()-20, fh-new_btn.height()-20)
         filler.resizeEvent = on_resize
 
