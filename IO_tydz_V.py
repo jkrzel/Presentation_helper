@@ -1,3 +1,7 @@
+import sys
+print("Interpreter:", sys.executable)
+
+
 import tkinter as tk
 from PIL import Image, ImageTk
 import ctypes
