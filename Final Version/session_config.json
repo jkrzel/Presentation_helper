@@ -1,9 +1,9 @@
 {
-  "camera_resolution": "High",
-  "mirror_transparency": 40,
-  "gesture_recognition": "Medium",
+  "camera_resolution": "Medium",
+  "mirror_transparency": 50,
+  "gesture_recognition": "High",
   "cursor_smoothing": {
     "epsilon": 0,
-    "interpolation": 50
+    "interpolation": 94
   }
 }
